@@ -16,7 +16,7 @@ take it further to include trapping and hunting etc. " - Steve Anderson (Mar, 23
 ## Status
 - Slow porting to UWP
 - Only Map Editor reconstructed at now
-- Game runs but game content is not all / full (i.e., no some "containers"?...)
+- Game runs ok but game contolling damaged (inventory choose bugs, no touch support, strange mouse moves, etc.)
 - To be continued... I hope :)
 
 ## References
