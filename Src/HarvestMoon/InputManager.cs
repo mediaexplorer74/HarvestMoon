@@ -1,4 +1,4 @@
-﻿#region File Description
+#region File Description
 //-----------------------------------------------------------------------------
 // InputManager.cs
 //
@@ -50,8 +50,8 @@ namespace AzureAcres
             TargetDown,
             ActiveCharacterLeft,
             ActiveCharacterRight,
-            TotalActionCount,
-        }
+            TotalActionCount
+    }
 
 
         /// <summary>
@@ -175,11 +175,41 @@ namespace AzureAcres
             get { return currentKeyboardState; }
         }
 
+        /// <summary>
+        /// The state of the mouse as of the last update.
+        /// </summary>
+        private static MouseState currentMouseState;
+
+        /// <summary>
+        /// The state of the mouse as of the last update.
+        /// </summary>
+        public static MouseState CurrentMouseState
+        {
+            get { return currentMouseState; }
+        }
+
 
         /// <summary>
         /// The state of the keyboard as of the previous update.
         /// </summary>
         private static KeyboardState previousKeyboardState;
+
+        /// <summary>
+        /// The state of the mouse as of the previous update.
+        /// </summary>
+        private static MouseState previousMouseState;
+
+        // Состояние указателя (мышь/сенсорный экран)
+        private static Point pointerPosition;
+        private static Point previousPointerPosition;
+        private static bool isPointerPressed;
+        private static bool wasPointerPressed;
+        private static bool isInteractionRequested;
+        private static bool wasInteractionRequested;
+        private static bool isInventoryRequested;
+        private static bool wasInventoryRequested;
+        private static Vector2 pointerMovement;
+        private static Vector2 previousPointerMovement;
 
 
         /// <summary>
@@ -876,6 +906,7 @@ namespace AzureAcres
         /// </summary>
         private static bool IsActionMapPressed(ActionMap actionMap)
         {
+            // Проверка клавиатуры
             for (int i = 0; i < actionMap.keyboardKeys.Count; i++)
             {
                 if (IsKeyPressed(actionMap.keyboardKeys[i]))
@@ -883,6 +914,8 @@ namespace AzureAcres
                     return true;
                 }
             }
+            
+            // Проверка геймпада
             if (currentGamePadState.IsConnected)
             {
                 for (int i = 0; i < actionMap.gamePadButtons.Count; i++)
@@ -893,6 +926,67 @@ namespace AzureAcres
                     }
                 }
             }
+            
+            // Проверка мыши/сенсорного экрана для определенных действий
+            Action action = Action.MainMenu;
+            for (int i = 0; i < (int)Action.TotalActionCount; i++)
+            {
+                if (actionMaps[i] == actionMap)
+                {
+                    action = (Action)i;
+                    break;
+                }
+            }
+            
+            // Проверяем ввод с мыши/сенсорного экрана
+            // Проверяем движение персонажа (не требует нажатия кнопки)
+            if (action == Action.MoveCharacterLeft && pointerMovement.X < -5)
+            {
+                
+                System.Diagnostics.Debug.WriteLine($"Движение влево: pointerMovement.X={pointerMovement.X}");
+                return true;
+            }
+            if (action == Action.MoveCharacterRight && pointerMovement.X > 5)
+            {
+                System.Diagnostics.Debug.WriteLine($"Движение вправо: pointerMovement.X={pointerMovement.X}");
+                return true;
+            }
+            if (action == Action.MoveCharacterUp && pointerMovement.Y < -5)
+            {
+                action = Action.MoveCharacterUp;
+                System.Diagnostics.Debug.WriteLine($"Движение вверх: pointerMovement.Y={pointerMovement.Y}");
+                return true;
+            }
+            if (action == Action.MoveCharacterDown && pointerMovement.Y > 5)
+            {
+                System.Diagnostics.Debug.WriteLine($"Движение вниз: pointerMovement.Y={pointerMovement.Y}");
+                return true;
+            }
+            
+            if (isPointerPressed)
+            {
+                // Проверяем взаимодействие
+                if (action == Action.Ok && isInteractionRequested)
+                {
+                    System.Diagnostics.Debug.WriteLine("Действие Ok pressed");
+                    return true;
+                }
+                
+                // Проверяем вызов инвентаря
+                if (action == Action.CharacterManagement && isInventoryRequested)
+                {
+                    System.Diagnostics.Debug.WriteLine("Действие CharacterManagement pressed");
+                    return true;
+                }
+                
+                // Проверяем вызов главного меню
+                if (action == Action.MainMenu && isInventoryRequested)
+                {
+                    System.Diagnostics.Debug.WriteLine("Действие MainMenu pressed");
+                    return true;
+                }
+            }
+
             return false;
         }
 
@@ -902,6 +996,7 @@ namespace AzureAcres
         /// </summary>
         private static bool IsActionMapTriggered(ActionMap actionMap)
         {
+            // Проверка клавиатуры
             for (int i = 0; i < actionMap.keyboardKeys.Count; i++)
             {
                 if (IsKeyTriggered(actionMap.keyboardKeys[i]))
@@ -909,6 +1004,8 @@ namespace AzureAcres
                     return true;
                 }
             }
+            
+            // Проверка геймпада
             if (currentGamePadState.IsConnected)
             {
                 for (int i = 0; i < actionMap.gamePadButtons.Count; i++)
@@ -919,6 +1016,38 @@ namespace AzureAcres
                     }
                 }
             }
+            
+            // Проверка мыши/сенсорного экрана для определенных действий
+            Action action = Action.MainMenu;
+            for (int i = 0; i < (int)Action.TotalActionCount; i++)
+            {
+                if (actionMaps[i] == actionMap)
+                {
+                    action = (Action)i;
+                    break;
+                }
+            }
+            
+            // Проверяем ввод с мыши/сенсорного экрана
+            if (action == Action.Ok && isInteractionRequested && isPointerPressed)
+            {
+                System.Diagnostics.Debug.WriteLine($"Действие Ok триггер: isInteractionRequested={isInteractionRequested}, wasInteractionRequested={wasInteractionRequested}, isPointerPressed={isPointerPressed}");
+                return true;
+            }
+            
+            if (action == Action.CharacterManagement && isInventoryRequested && isPointerPressed)
+            {
+                System.Diagnostics.Debug.WriteLine($"Действие CharacterManagement триггер: isInventoryRequested={isInventoryRequested}, wasInventoryRequested={wasInventoryRequested}, isPointerPressed={isPointerPressed}");
+                return true;
+            }
+            
+            // Проверяем триггеры для действий MainMenu
+            if (action == Action.MainMenu && isInventoryRequested && isPointerPressed)
+            {
+                System.Diagnostics.Debug.WriteLine($"Действие MainMenu триггер: isInventoryRequested={isInventoryRequested}, isPointerPressed={isPointerPressed}");
+                return true;
+            }
+            
             return false;
         }
 
@@ -949,16 +1078,101 @@ namespace AzureAcres
         /// </summary>
         public static void Update()
         {
-            // update the keyboard state
+            // update game input state
             previousKeyboardState = currentKeyboardState;
-            currentKeyboardState = Keyboard.GetState();
-
-            // update the gamepad state
             previousGamePadState = currentGamePadState;
+            previousMouseState = currentMouseState;
+
+            previousPointerPosition = pointerPosition;
+            wasPointerPressed = isPointerPressed;
+            wasInteractionRequested = isInteractionRequested;
+            wasInventoryRequested = isInventoryRequested;
+            previousPointerMovement = pointerMovement;
+
+            currentKeyboardState = Keyboard.GetState();
             currentGamePadState = GamePad.GetState(PlayerIndex.One);
+            currentMouseState = Mouse.GetState();
+            
+            // Сбрасываем запросы взаимодействия и инвентаря после обработки
+            isInteractionRequested = false;
+            isInventoryRequested = false;
+
+            // Сбрасываем движение указателя после каждого кадра, чтобы персонаж не продолжал двигаться
+            // Это заставит GamePage.xaml.cs устанавливать новое значение при каждом движении указателя
+            //pointerMovement = Vector2.Zero;
+            pointerMovement = 
+                new Vector2(
+                     currentMouseState.Position.X - previousMouseState.Position.X, 
+                     currentMouseState.Position.Y - previousMouseState.Position.Y
+                   );
+
+            // Выводим отладочную информацию
+            if (isPointerPressed)
+              System.Diagnostics.Debug.WriteLine($"Update: isPointerPressed={isPointerPressed}, pointerMovement={pointerMovement}");
         }
 
 
+        #endregion
+        
+        #region Pointer Input Methods
+        
+        // Методы для установки состояния указателя (мышь/сенсорный экран)
+        public static void SetPointerPosition(Point position)
+        {
+            pointerPosition = position;
+        }
+        
+        public static void SetPointerPressed(bool pressed)
+        {
+            isPointerPressed = pressed;
+        }
+        
+        public static void SetInteractionRequested(bool requested)
+        {
+            isInteractionRequested = requested;
+        }
+        
+        public static void SetInventoryRequested(bool requested)
+        {
+            isInventoryRequested = requested;
+        }
+        
+        public static void SetPointerMovement(Vector2 movement)
+        {
+            pointerMovement = movement;
+        }
+        
+        // Методы для получения состояния указателя
+        public static Point GetPointerPosition()
+        {
+            return pointerPosition;
+        }
+        
+        public static bool IsPointerPressed()
+        {
+            return isPointerPressed;
+        }
+        
+        public static bool IsPointerTriggered()
+        {
+            return isPointerPressed && !wasPointerPressed;
+        }
+        
+        public static Vector2 GetPointerMovement()
+        {
+            return pointerMovement;
+        }
+        
+        public static bool GetInteractionRequested()
+        {
+            return isInteractionRequested;
+        }
+        
+        public static bool GetInventoryRequested()
+        {
+            return isInventoryRequested;
+        }
+        
         #endregion
     }
 }

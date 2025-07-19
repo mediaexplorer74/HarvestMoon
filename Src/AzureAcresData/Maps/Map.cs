@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -160,14 +160,31 @@ namespace AzureAcresData
                     tile.Coordinates = new Vector2(x*existing.TileWidth, y*existing.TileHeight);
                     existing.AnimatedTiles.Add(tile);
                 }
-                existing.Portals = input.ReadObject<List<Portal>>();
+                try
+                {
+                    existing.Portals = input.ReadObject<List<Portal>>();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("[ex] input.ReadObject<List<Portal>>() error: " + ex.Message);
+                    existing.Portals = new List<Portal>();
+                }
+                
                 try
                 {
                     existing.Containers = input.ReadObject<List<ItemContainer>>();
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine("[ex] input.ReadObject<List<ItemContainer>>() error:  " + ex.Message);
+                    Debug.WriteLine("[ex] input.ReadObject<List<ItemContainer>>() error: " + ex.Message);
+
+
+                    // Plan B: manual adding of default container
+                    existing.Containers = new List<ItemContainer>();
+                    ItemContainer container = new ItemContainer();
+                    //container.Type = ItemContainer.ContainerType.Chest;
+                    container.Name = "Default Chest";
+                    existing.Containers.Add(container);
                 }
 
                 return existing;

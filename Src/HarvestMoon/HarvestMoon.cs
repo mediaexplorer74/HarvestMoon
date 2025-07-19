@@ -24,6 +24,9 @@ namespace AzureAcres
         Inventory _inventory;
         ClockAndWeather _clockAndWeather;
         Texture2D _overlay;
+        
+        // Текстура курсора мыши
+        Texture2D _mouseCursor;
 
         float _elapsedTime = 0.0f;
         int _frameCounter = 0;
@@ -39,6 +42,10 @@ namespace AzureAcres
         public AzureAcres()
         {
             graphics = new GraphicsDeviceManager(this);
+
+            graphics.IsFullScreen = false;
+            //graphics.HardwareModeSwitch = true;
+
             Window.AllowUserResizing = true;
             Window.ClientSizeChanged += new EventHandler<EventArgs>(Window_ClientSizeChanged);
             Content.RootDirectory = "Content";
@@ -63,6 +70,9 @@ namespace AzureAcres
         {
             base.Initialize();
             InputManager.Initialize();
+            
+            // Скрываем системный курсор, так как будем использовать собственный
+            IsMouseVisible = false;
         }
 
         /// <summary>
@@ -112,6 +122,30 @@ namespace AzureAcres
 
             _overlay = new Texture2D(graphics.GraphicsDevice, 1, 1);
             _overlay.SetData(new Color[] { Color.DarkBlue });
+            
+            // Создаем простую текстуру для курсора мыши
+            _mouseCursor = new Texture2D(graphics.GraphicsDevice, 16, 16);
+            Color[] cursorData = new Color[16 * 16];
+            for (int i = 0; i < cursorData.Length; i++)
+            {
+                int x = i % 16;
+                int y = i / 16;
+                
+                // Создаем простой курсор в виде крестика
+                if (x == 7 || x == 8 || y == 7 || y == 8)
+                {
+                    cursorData[i] = Color.White;
+                }
+                else if ((x == 0 && y == 0) || (x == 15 && y == 0) || (x == 0 && y == 15) || (x == 15 && y == 15))
+                {
+                    cursorData[i] = Color.White;
+                }
+                else
+                {
+                    cursorData[i] = Color.Transparent;
+                }
+            }
+            _mouseCursor.SetData(cursorData);
         }
 
         protected void _tileEngine_OnContainerOpened(object sender)
@@ -133,6 +167,7 @@ namespace AzureAcres
             player.WalkingSprite.Texture.Dispose();
             _tileEngine.Unload();
             _overlay.Dispose();
+            _mouseCursor.Dispose();
         }
 
         /// <summary>
@@ -153,25 +188,68 @@ namespace AzureAcres
                 _elapsedTime = 0;
             }
 
+            // Обновляем позицию курсора, если используется мышь (не сенсорный ввод)
+            MouseState mouseState = Mouse.GetState();
+            if (mouseState.Position != Point.Zero)
+            {
+                InputManager.SetPointerPosition(mouseState.Position);
+                
+                // Обновляем состояние нажатия кнопок мыши
+                if (mouseState.LeftButton == ButtonState.Pressed)
+                {
+                    InputManager.SetPointerPressed(true);
+                    InputManager.SetInteractionRequested(true);
+                    System.Diagnostics.Debug.WriteLine("Установлен запрос взаимодействия из HarvestMoon.Update");
+                }
+                else if (mouseState.RightButton == ButtonState.Pressed)
+                {
+                    InputManager.SetPointerPressed(true);
+                    InputManager.SetInventoryRequested(true);
+                    System.Diagnostics.Debug.WriteLine("Установлен запрос инвентаря из HarvestMoon.Update");
+                }
+                else
+                {
+                    InputManager.SetPointerPressed(false);
+                }
+            }
+            
             // Allows the game to exit
             if (InputManager.IsActionTriggered(InputManager.Action.ExitGame))
                 this.Exit();
 
-            InputManager.Update();
-
             #region HANDLE GAME
             if (!_inventory.Visible)
             {
-                if (InputManager.IsActionTriggered(InputManager.Action.MainMenu))
+                // Проверяем нажатие на правую кнопку мыши для открытия инвентаря
+                if (InputManager.IsActionTriggered(InputManager.Action.MainMenu) || InputManager.IsActionTriggered(InputManager.Action.CharacterManagement))
+                {
+                    System.Diagnostics.Debug.WriteLine("Открываем инвентарь");
                     _inventory.OpenInventory();
+                }
                 Vector2 move = Vector2.Zero;
 
                 /// If the player isn't doing something else allow
                 /// movement
-                if (InputManager.IsActionPressed(InputManager.Action.MoveCharacterLeft)) move = new Vector2(-3, 0);
-                else if (InputManager.IsActionPressed(InputManager.Action.MoveCharacterRight)) move = new Vector2(3, 0);
-                else if (InputManager.IsActionPressed(InputManager.Action.MoveCharacterUp)) move = new Vector2(0, -3);
-                else if (InputManager.IsActionPressed(InputManager.Action.MoveCharacterDown)) move = new Vector2(0, 3);
+                if (InputManager.IsActionPressed(InputManager.Action.MoveCharacterLeft))
+                {
+                    move = new Vector2(-3, 0);
+                    //System.Diagnostics.Debug.WriteLine("Движение влево");
+                }
+                else if (InputManager.IsActionPressed(InputManager.Action.MoveCharacterRight))
+                {
+                    move = new Vector2(3, 0);
+                    //System.Diagnostics.Debug.WriteLine("Движение вправо");
+                }
+                else if (InputManager.IsActionPressed(InputManager.Action.MoveCharacterUp))
+                {
+                    move = new Vector2(0, -3);
+                    //System.Diagnostics.Debug.WriteLine("Движение вверх");
+                }
+                else if (InputManager.IsActionPressed(InputManager.Action.MoveCharacterDown))
+                {
+                    move = new Vector2(0, 3);
+                    //System.Diagnostics.Debug.WriteLine("Движение вниз");
+                }
 
                 if (player.State == Character.CharacterState.Idle ||
                     player.State == Character.CharacterState.Walking)
@@ -196,26 +274,36 @@ namespace AzureAcres
                     if (InputManager.IsKeyTriggered(Keys.LeftShift)) Session.SelectPreviousInventoryItem();
                 }
 
+                // Проверяем нажатие на левую кнопку мыши для взаимодействия
                 if (InputManager.IsActionTriggered(InputManager.Action.Ok))
                 {
+                    System.Diagnostics.Debug.WriteLine("Действие Ok вызвано");
                     if (Session.SelectedInventoryItem != null)
                     {
+                        System.Diagnostics.Debug.WriteLine($"Выбранный предмет: {Session.SelectedInventoryItem.GetItemName()}");
                         player.State = Character.CharacterState.Acting;
 
                         if (Session.SelectedInventoryItem != null && Session.SelectedInventoryItem is Tool)
                         {
                             (Session.SelectedInventoryItem as Tool).ResetAnimation();
+                            System.Diagnostics.Debug.WriteLine("Сбрасываем анимацию инструмента");
                         }
                         else if (Session.IsSelectedItemCrop)
                         {
                             player.State = Character.CharacterState.Idle;
+                            System.Diagnostics.Debug.WriteLine("Выбран урожай, устанавливаем состояние персонажа в Idle");
                         }
                         
                         /// Do the act
                         /// thinking that you can send the tool to the object and the tilemanager
                         /// with the location that the action is done, this will allow the tilemanager to decide
                         /// what is to be done and the object
+                        System.Diagnostics.Debug.WriteLine($"Выполняем действие в позиции: {PlayerPosition.SelectionMapVector}");
                         _tileEngine.Act((ContentObject)Session.SelectedInventoryItem, player, PlayerPosition.SelectionMapVector);                        
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine("Нет выбранного предмета для взаимодействия");
                     }
                 }
             }
@@ -286,6 +374,10 @@ namespace AzureAcres
 
             HandleInventory();
             base.Update(gameTime);
+            
+            // Обновляем InputManager в конце кадра, чтобы сбросить состояния ввода
+            InputManager.Update();
+            //System.Diagnostics.Debug.WriteLine("InputManager.Update() вызван в конце кадра");
         }
 
         protected void HandleInventory()
@@ -412,6 +504,14 @@ namespace AzureAcres
                 _inventory.Draw(spriteBatch, Clock.ElapsedMilliseconds);
             }
             _clockAndWeather.Draw(spriteBatch);
+            
+            // Отрисовка курсора мыши
+            if (InputManager.GetPointerPosition() != Point.Zero)
+            {
+                Point mousePosition = InputManager.GetPointerPosition();
+                spriteBatch.Draw(_mouseCursor, new Vector2(mousePosition.X - 8, mousePosition.Y - 8), Color.White);
+            }
+            
             spriteBatch.End();
 
             base.Draw(gameTime);

@@ -446,17 +446,17 @@ namespace AzureAcres
         private ItemContainer GetCollidingContainer()
         {
             //TODO
-            if (Map.Containers != null)
+            //if (Map.Containers != null)
             {
                 foreach (ItemContainer p in Map.Containers)
                     if (Colliding(new Rectangle((int)p.Position.X, (int)p.Position.Y, (int)p.Dimensions.X, (int)p.Dimensions.Y),
                         PlayerPosition.SelectionMapVector))
                         return p;                
             }
-            else
-            {
-                //Debug.WriteLine("[i] TileEngine - Map.Containers is null!");
-            }
+            //else
+            //{
+            //    //Debug.WriteLine("[i] TileEngine - Map.Containers is null!");
+            //}
             return null;
         }
         #endregion

@@ -203,14 +203,14 @@ namespace AzureAcresData
                 existing.GrowTime = input.ReadInt32();
 
                 //TODO
-                existing.TextureName = input.AssetName;//input.ReadString();
-                existing.Texture = default;//input.ContentManager.Load<Texture2D>(existing.TextureName);
+                existing.TextureName = input.ReadString();
+                existing.Texture = input.ContentManager.Load<Texture2D>(existing.TextureName);
 
-                existing.InventoryInitialTextureName = "InventoryInitialTextureName";//input.ReadString();
-                existing.InventoryInitialTexture = default;//input.ContentManager.Load<Texture2D>(existing.InventoryInitialTextureName);
-                existing.InventoryCompleteTextureName = "InventoryCompleteTextureName";//input.ReadString();
-                existing.InventoryCompleteTexture = default;//input.ContentManager.Load<Texture2D>(existing.InventoryCompleteTextureName);
-                existing.Dimensions = default;//input.ReadObject<Point>();
+                existing.InventoryInitialTextureName = input.ReadString();
+                existing.InventoryInitialTexture = input.ContentManager.Load<Texture2D>(existing.InventoryInitialTextureName);
+                existing.InventoryCompleteTextureName = input.ReadString();
+                existing.InventoryCompleteTexture = input.ContentManager.Load<Texture2D>(existing.InventoryCompleteTextureName);
+                existing.Dimensions = input.ReadObject<Point>();
                 existing.WaterTime = input.ReadInt32();
 
                 existing.ElapsedGrowTime = 0;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -158,6 +158,13 @@ namespace AzureAcresData
                     existing.SelectedTexture = input.ContentManager.Load<Texture2D>(existing.SelectedTextureName);
 
                 existing.Items = new ICollectableItem[existing.ContentsWidth * existing.ContentsHeight];
+                
+                // Инициализируем массив Items пустым массивом
+                // Не пытаемся читать Items из потока, так как это может вызвать ошибку
+                // "Unable to read beyond the end of the stream"
+                System.Diagnostics.Debug.WriteLine("Инициализация Items пустым массивом");
+                // Массив Items уже инициализирован выше
+                
                 return existing;
             }
         }

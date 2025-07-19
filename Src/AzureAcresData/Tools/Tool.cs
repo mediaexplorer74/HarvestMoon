@@ -70,9 +70,9 @@ namespace AzureAcresData
                 existing.Name = input.ReadString();
 
                 //TODO
-                existing.Type = "undefined";//input.ReadString();
-                existing.InventoryTextureName = input.AssetName;//input.ReadString();
-                existing.InventoryTexture = default;//input.ContentManager.Load<Texture2D>(existing.InventoryTextureName);
+                existing.Type = input.ReadString();
+                existing.InventoryTextureName = input.ReadString(); 
+                existing.InventoryTexture = input.ContentManager.Load<Texture2D>(existing.InventoryTextureName);
                 existing.Sprite = input.ReadObject<AnimatingSprite>();
                 if (existing.Sprite != null)
                 {

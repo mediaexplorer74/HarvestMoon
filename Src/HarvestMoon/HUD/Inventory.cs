@@ -62,10 +62,14 @@ namespace AzureAcres
             }
 
             /// Input for moving around the menu
-            if (InputManager.IsActionTriggered(InputManager.Action.MoveCharacterUp)) _hoveringItem += new Vector2(0, -1);
-            else if (InputManager.IsActionTriggered(InputManager.Action.MoveCharacterDown)) _hoveringItem += new Vector2(0, 1);
-            else if (InputManager.IsActionTriggered(InputManager.Action.MoveCharacterLeft)) _hoveringItem += new Vector2(-1, 0);
-            else if (InputManager.IsActionTriggered(InputManager.Action.MoveCharacterRight)) _hoveringItem += new Vector2(1, 0);
+            if (InputManager.IsActionTriggered(InputManager.Action.MoveCharacterUp)) 
+                _hoveringItem += new Vector2(0, -1);
+            else if (InputManager.IsActionTriggered(InputManager.Action.MoveCharacterDown))
+                _hoveringItem += new Vector2(0, 1);
+            else if (InputManager.IsActionTriggered(InputManager.Action.MoveCharacterLeft))
+                _hoveringItem += new Vector2(-1, 0);
+            else if (InputManager.IsActionTriggered(InputManager.Action.MoveCharacterRight)) 
+                _hoveringItem += new Vector2(1, 0);
 
             if (_hoveringItem.X > 3)
             {

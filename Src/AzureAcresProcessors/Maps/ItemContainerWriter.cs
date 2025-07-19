@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,7 +19,10 @@ namespace AzureAcresProcessors
             output.Write(value.Position);
             output.Write(value.BackgroundTextureName);
             output.Write(value.SelectedTextureName);
-            output.WriteObject<ICollectableItem[]>(value.Items);
+            
+            // Не сериализуем массив Items, так как ItemContainer.ItemContainerContentReader не читает его
+            // Это предотвращает ошибку "Unable to read beyond the end of the stream"
+            // при десериализации ItemContainer
         }
 
         public override string GetRuntimeReader(Microsoft.Xna.Framework.Content.Pipeline.TargetPlatform targetPlatform)
