@@ -445,10 +445,18 @@ namespace AzureAcres
         #region CONTAINERS
         private ItemContainer GetCollidingContainer()
         {
-            foreach (ItemContainer p in Map.Containers)
-                if (Colliding(new Rectangle((int)p.Position.X, (int)p.Position.Y, (int)p.Dimensions.X, (int)p.Dimensions.Y),
-                    PlayerPosition.SelectionMapVector))
-                    return p;
+            //TODO
+            if (Map.Containers != null)
+            {
+                foreach (ItemContainer p in Map.Containers)
+                    if (Colliding(new Rectangle((int)p.Position.X, (int)p.Position.Y, (int)p.Dimensions.X, (int)p.Dimensions.Y),
+                        PlayerPosition.SelectionMapVector))
+                        return p;                
+            }
+            else
+            {
+                //Debug.WriteLine("[i] TileEngine - Map.Containers is null!");
+            }
             return null;
         }
         #endregion
@@ -530,7 +538,7 @@ namespace AzureAcres
         #endregion
 
         #region ACTING LOGIC
-        public override void Act(/*Content*/Object actingObject, Character actingCharacter, Vector2 location)
+        public override void Act(ContentObject actingObject, Character actingCharacter, Vector2 location)
         {
             base.Act(actingObject, actingCharacter, location);
             Crop crop = GetCrop(Map.Name, location);

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HarvestMoonProcessors", "Az
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HarvestMoonMapEditor", "AzureAcresMapEditor\HarvestMoonMapEditor.csproj", "{49C9C7F8-65F3-4CB7-8A03-1958FB499389}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureAcresData", "AzureAcresData\AzureAcresData.csproj", "{A9D62E7C-67FB-4813-9850-7F3669FBCFD9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -77,6 +79,22 @@ Global
 		{49C9C7F8-65F3-4CB7-8A03-1958FB499389}.Release|x64.Build.0 = Release|x86
 		{49C9C7F8-65F3-4CB7-8A03-1958FB499389}.Release|x86.ActiveCfg = Release|x86
 		{49C9C7F8-65F3-4CB7-8A03-1958FB499389}.Release|x86.Build.0 = Release|x86
+		{A9D62E7C-67FB-4813-9850-7F3669FBCFD9}.Debug|ARM.ActiveCfg = Debug|ARM
+		{A9D62E7C-67FB-4813-9850-7F3669FBCFD9}.Debug|ARM.Build.0 = Debug|ARM
+		{A9D62E7C-67FB-4813-9850-7F3669FBCFD9}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{A9D62E7C-67FB-4813-9850-7F3669FBCFD9}.Debug|ARM64.Build.0 = Debug|ARM64
+		{A9D62E7C-67FB-4813-9850-7F3669FBCFD9}.Debug|x64.ActiveCfg = Debug|x64
+		{A9D62E7C-67FB-4813-9850-7F3669FBCFD9}.Debug|x64.Build.0 = Debug|x64
+		{A9D62E7C-67FB-4813-9850-7F3669FBCFD9}.Debug|x86.ActiveCfg = Debug|x86
+		{A9D62E7C-67FB-4813-9850-7F3669FBCFD9}.Debug|x86.Build.0 = Debug|x86
+		{A9D62E7C-67FB-4813-9850-7F3669FBCFD9}.Release|ARM.ActiveCfg = Release|ARM
+		{A9D62E7C-67FB-4813-9850-7F3669FBCFD9}.Release|ARM.Build.0 = Release|ARM
+		{A9D62E7C-67FB-4813-9850-7F3669FBCFD9}.Release|ARM64.ActiveCfg = Release|ARM64
+		{A9D62E7C-67FB-4813-9850-7F3669FBCFD9}.Release|ARM64.Build.0 = Release|ARM64
+		{A9D62E7C-67FB-4813-9850-7F3669FBCFD9}.Release|x64.ActiveCfg = Release|x64
+		{A9D62E7C-67FB-4813-9850-7F3669FBCFD9}.Release|x64.Build.0 = Release|x64
+		{A9D62E7C-67FB-4813-9850-7F3669FBCFD9}.Release|x86.ActiveCfg = Release|x86
+		{A9D62E7C-67FB-4813-9850-7F3669FBCFD9}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

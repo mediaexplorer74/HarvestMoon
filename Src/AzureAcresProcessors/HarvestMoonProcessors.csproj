@@ -12,10 +12,11 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -124,6 +125,20 @@
     <Compile Include="Animation\AnimationWriter.cs" />
     <Compile Include="Characters\CharacterWriter.cs" />
     <Compile Include="Crops\CropWriter.cs" />
+    <Compile Include="HarvestMoonData\ActionableObject.cs" />
+    <Compile Include="HarvestMoonData\Animation\AnimatingSprite.cs" />
+    <Compile Include="HarvestMoonData\Animation\Animation.cs" />
+    <Compile Include="HarvestMoonData\Characters\Character.cs" />
+    <Compile Include="HarvestMoonData\ContentObject.cs" />
+    <Compile Include="HarvestMoonData\Crops\Crop.cs" />
+    <Compile Include="HarvestMoonData\Direction.cs" />
+    <Compile Include="HarvestMoonData\ICloneable.cs" />
+    <Compile Include="HarvestMoonData\ICollectableItem.cs" />
+    <Compile Include="HarvestMoonData\Maps\AnimatedTile.cs" />
+    <Compile Include="HarvestMoonData\Maps\ItemContainer.cs" />
+    <Compile Include="HarvestMoonData\Maps\Map.cs" />
+    <Compile Include="HarvestMoonData\Maps\Portal.cs" />
+    <Compile Include="HarvestMoonData\Tools\Tool.cs" />
     <Compile Include="Maps\AnimatedTileWriter.cs" />
     <Compile Include="Maps\ItemContainerWriter.cs" />
     <Compile Include="Maps\MapWriter.cs" />
@@ -143,10 +158,261 @@
       <Version>3.8.0.1641</Version>
     </PackageReference>
   </ItemGroup>
+  
+  
+  <ItemGroup>   
+    <Compile Include="Content\Maps\Map001.xml">
+      <Name>Map001</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+      <SubType>Designer</SubType>
+    </Compile>  
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Content\Textures\Maps\Outside.png">
+      <Name>Outside</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Crops\StrawberryBush.xml">
+      <Name>StrawberryBush</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+      <SubType>Designer</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Content\Objects\" />
+    <Folder Include="Content\Textures\Objects\" />
+    <Folder Include="Content\Textures\Tiles\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Textures\Crops\Pumpkin.png">
+      <Name>Pumpkin</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Content\Textures\Crops\StrawberryBush.png">
+      <Name>StrawberryBush</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Fonts\DebugFont.bmp">
+      <Name>DebugFont</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>FontTextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Crops\Pumpkin.xml">
+      <Name>Pumpkin</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+      <SubType>Designer</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Tools\WateringCan.xml">
+      <Name>WateringCan</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+      <SubType>Designer</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Textures\Characters\GirlWalking.png">
+      <Name>GirlWalking</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Characters\GirlFarmer.xml">
+      <Name>GirlFarmer</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Textures\Characters\GirlIdle.png">
+      <Name>GirlIdle</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Textures\Tools\GirlWatering.png">
+      <Name>GirlWatering</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Tools\Hoe.xml">
+      <Name>Hoe</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Textures\Tools\GirlHoeing.png">
+      <Name>GirlHoeing</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Tiles\WaterFourCorners.xml">
+      <Name>WaterFourCorners</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Tiles\WaterLeft.xml">
+      <Name>WaterLeft</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+      <SubType>Designer</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Crops\AppleTree.xml">
+      <Name>AppleTree</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Textures\Crops\AppleTree.png">
+      <Name>AppleTree</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Characters\TestingNPC.xml">
+      <Name>TestingNPC</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Maps\Inhouse.xml">
+      <Name>Inhouse</Name>
+      <Importer>XmlImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Textures\HUD\InventoryBoxes.png">
+      <Name>InventoryBoxes</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Textures\HUD\Inventory\Pumpkin.png">
+      <Name>Pumpkin</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Content\Textures\HUD\Inventory\Strawberries.png">
+      <Name>Strawberries</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Textures\HUD\Inventory\Spade.png">
+      <Name>Spade</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Content\Textures\HUD\Inventory\WateringCan.png">
+      <Name>WateringCan</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Textures\HUD\SelectedItem.png">
+      <Name>SelectedItem</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Textures\HUD\Inventory\PumpkinSeeds.png">
+      <Name>PumpkinSeeds</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Content\Textures\HUD\Inventory\StrawberryBushSeeds.png">
+      <Name>StrawberryBushSeeds</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Textures\HUD\Inventory.png">
+      <Name>Inventory</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Textures\HUD\Refridgerator.png">
+      <Name>Refridgerator</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Content\Textures\HUD\ToolChest.png">
+      <Name>ToolChest</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Textures\Characters\BoyIdle.png">
+      <Name>BoyIdle</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Content\Textures\Characters\BoyWalking.png">
+      <Name>BoyWalking</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Textures\HUD\Weather.png">
+      <Name>Weather</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Content\Textures\HUD\ClockAndWeatherBackground.png">
+      <Name>ClockAndWeatherBackground</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  
+    
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
+
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -215,9 +215,7 @@ namespace AzureAcres
                         /// thinking that you can send the tool to the object and the tilemanager
                         /// with the location that the action is done, this will allow the tilemanager to decide
                         /// what is to be done and the object
-                        //TODO
-                        //_tileEngine.Act((ContentObject)Session.SelectedInventoryItem, player, PlayerPosition.SelectionMapVector);
-                        _tileEngine.Act((Object)Session.SelectedInventoryItem, player, PlayerPosition.SelectionMapVector);
+                        _tileEngine.Act((ContentObject)Session.SelectedInventoryItem, player, PlayerPosition.SelectionMapVector);                        
                     }
                 }
             }
